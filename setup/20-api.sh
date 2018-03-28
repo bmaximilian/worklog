@@ -6,4 +6,4 @@ cd ../api
 
 echo "Setting up api..."
 
-yes | cp -f .env.default .env
+yes | cp -f .env.example .env
