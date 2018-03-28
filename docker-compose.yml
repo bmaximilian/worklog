@@ -1,0 +1,50 @@
+version: '3.1'
+
+services:
+  worklog-api:
+    build:
+      context: api
+      args:
+        - NODE_ENV=production
+        - PORT=3333
+    image: worklog-api
+    command: adonis serve
+    environment:
+      - NODE_ENV=production
+    networks:
+      worklog_net:
+
+  worklog-frontend:
+    build:
+      context: frontend
+      args:
+        - NODE_ENV=production
+        - PORT=3000
+    image: worklog-frontend
+    command: ./node_modules/.bin/next build && ./node_modules/.bin/ next start
+    environment:
+      - NODE_ENV=production
+    networks:
+      worklog_net:
+
+  webserver:
+    build:
+      context: webserver
+    image: worklog-webserver
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - worklog-frontend
+      - worklog-api
+    networks:
+      dev_help_net:
+        aliases:
+          - worklog-api.test
+          - worklog.test
+
+volumes:
+  notused:
+
+networks:
+  worklog_net:
