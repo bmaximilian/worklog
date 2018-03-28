@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+cd "$(dirname "$0")"
+cd ../..
+# path is now project root
+
+docker-compose -p worklog run worklog-api npm run ci
