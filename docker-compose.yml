@@ -21,7 +21,6 @@ services:
         - NODE_ENV=production
         - PORT=3000
     image: worklog-frontend
-    command: ./node_modules/.bin/next build && ./node_modules/.bin/ next start
     environment:
       - NODE_ENV=production
     networks:
@@ -38,7 +37,7 @@ services:
       - worklog-frontend
       - worklog-api
     networks:
-      dev_help_net:
+      worklog_net:
         aliases:
           - worklog-api.test
           - worklog.test

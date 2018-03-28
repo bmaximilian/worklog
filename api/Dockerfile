@@ -15,7 +15,7 @@ RUN chown -R node:node /home/node/.ssh && \
 RUN npm i -g @adonisjs/cli
 
 # create app directory
-RUN mkdir -p /opt/app && chown node:node /opt
+RUN mkdir -p /opt/app && chown -R node:node /opt/app
 
 # set our node environment, either development or production
 # defaults to production, compose overrides this to development on build and run

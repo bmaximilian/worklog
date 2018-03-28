@@ -18,7 +18,7 @@ services:
       # in case you want to use node/npm both outside container for test/lint etc. and also inside container
       # this will overwrite the default node_modules dir in container so it won't conflict with our
       # /opt/node_modules location.
-      - notused:/opt/app/node_modules
+      - notused_1:/opt/app/node_modules
     environment:
       - NODE_ENV=development
 
@@ -28,8 +28,6 @@ services:
         args:
           - NODE_ENV=development
           - PORT=3000
-      command: ./node_modules/.bin/next
-      tty: true
       ports:
         - "5859:5858"
         - "9230:9229"
@@ -39,9 +37,10 @@ services:
         # in case you want to use node/npm both outside container for test/lint etc. and also inside container
         # this will overwrite the default node_modules dir in container so it won't conflict with our
         # /opt/node_modules location.
-        - notused:/opt/app/node_modules
+        - notused_2:/opt/app/node_modules
       environment:
         - NODE_ENV=development
 
 volumes:
-    notused:
+    notused_1:
+    notused_2:
