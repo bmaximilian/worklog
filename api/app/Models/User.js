@@ -1,22 +1,29 @@
-'use strict'
 
-const Model = use('Model')
+const Model = use('Model');
 
+/**
+ * @class User
+ */
 class User extends Model {
-  static boot () {
-    super.boot()
-
     /**
+     * Boots the model
+     *
+     * @return {void}
+     */
+    static boot() {
+        super.boot();
+
+        /**
      * A hook to hash the user password before saving
      * it to the database.
      *
      * Look at `app/Models/Hooks/User.js` file to
      * check the hashPassword method
      */
-    this.addHook('beforeCreate', 'User.hashPassword')
-  }
+        this.addHook('beforeCreate', 'User.hashPassword');
+    }
 
-  /**
+    /**
    * A relationship on tokens is required for auth to
    * work. Since features like `refreshTokens` or
    * `rememberToken` will be saved inside the
@@ -24,11 +31,11 @@ class User extends Model {
    *
    * @method tokens
    *
-   * @return {Object}
+   * @return {Object} : Returns one or more tokens of the user
    */
-  tokens () {
-    return this.hasMany('App/Models/Token')
-  }
+    tokens() {
+        return this.hasMany('App/Models/Token');
+    }
 }
 
-module.exports = User
+module.exports = User;
