@@ -42,8 +42,19 @@ services:
           - worklog-api.test
           - worklog.test
 
+  mariadb:
+    build:
+      context: mariadb
+    image: worklog-mariadb
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      worklog_net:
+
 volumes:
-  notused:
+  mariadb-data:
 
 networks:
   worklog_net:
