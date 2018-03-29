@@ -45,7 +45,7 @@ class User extends Model {
      * @return {Object} : Returns one or more cockpit users of the user
      */
     cockpitUsers() {
-        return this.hasMany('App/Models/CockpitUser');
+        return this.belongsToMany('App/Models/CockpitUser');
     }
 }
 
