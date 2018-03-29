@@ -1,17 +1,17 @@
 const Schema = use('Schema');
 
 /**
- * time type (i.e holiday, project, vacation),
- * @class CockpitTimeTypesSchema
+ * working time type (i.e scheduled, fulfilled)
+ * @class CockpitWorkingTimeTypesSchema
  */
-class CockpitTimeTypesSchema extends Schema {
+class CockpitWorkingTimeTypesSchema extends Schema {
     /**
      * Creates the schema in the database
      *
      * @return {void}
      */
     up() {
-        this.create('cockpit_time_types', (table) => {
+        this.create('cockpit_working_time_types', (table) => {
             table.increments();
             table.timestamps();
             table.string('name').notNullable().unique();
@@ -25,8 +25,8 @@ class CockpitTimeTypesSchema extends Schema {
      * @return {void}
      */
     down() {
-        this.drop('cockpit_time_types');
+        this.drop('cockpit_working_time_types');
     }
 }
 
-module.exports = CockpitTimeTypesSchema;
+module.exports = CockpitWorkingTimeTypesSchema;

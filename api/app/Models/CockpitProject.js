@@ -1,8 +1,9 @@
-'use strict'
+const Model = use('Model');
 
-const Model = use('Model')
-
+/**
+ * @class CockpitProject
+ */
 class CockpitProject extends Model {
 }
 
-module.exports = CockpitProject
+module.exports = CockpitProject;
