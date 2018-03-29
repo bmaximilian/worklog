@@ -26,6 +26,7 @@ module.exports = {
         'no-console': process.env.NODE_ENV === 'production' ? 2 : 1,
         'no-trailing-spaces': 'error',
         'no-param-reassign': [2, { 'props': false }],
+        'class-methods-use-this': [0],
         quotes: [
             'error',
             'single',
