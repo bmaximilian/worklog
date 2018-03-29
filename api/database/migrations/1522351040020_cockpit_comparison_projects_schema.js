@@ -21,6 +21,8 @@ class CockpitComparisonProjectsSchema extends Schema {
                 .references('id')
                 .inTable('cockpit_projects');
 
+            table.integer('value').notNullable();
+
             table.foreign('cockpit_users_projects_comparison_id', 'ccp_cupc_id_foreign')
                 .references('id').inTable('cockpit_users_projects_comparisons');
         });
