@@ -36,6 +36,17 @@ class User extends Model {
     tokens() {
         return this.hasMany('App/Models/Token');
     }
+
+    /**
+     * The cockpit users of the user. Depending on permissions of the cockpit
+     *
+     * @method cockpitUsers
+     *
+     * @return {Object} : Returns one or more cockpit users of the user
+     */
+    cockpitUsers() {
+        return this.hasMany('App/Models/CockpitUser');
+    }
 }
 
 module.exports = User;
