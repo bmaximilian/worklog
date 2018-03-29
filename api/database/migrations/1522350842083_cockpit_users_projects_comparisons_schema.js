@@ -14,11 +14,11 @@ class CockpitUsersProjectsComparisonsSchema extends Schema {
         this.create('cockpit_users_projects_comparisons', (table) => {
             table.increments();
             table.timestamps();
-            table.integer('cockpit_user_id').unsigned().notNullable();
-            table.integer('year').unsigned();
-            table.integer('calendar_week').unsigned();
-
-            table.foreign('cockpit_user_id').references('id').inTable('cockpit_users');
+            table.integer('cockpit_user_id').unsigned().notNullable()
+                .references('id')
+                .inTable('cockpit_users');
+            table.integer('year').unsigned().notNullable();
+            table.integer('calendar_week').unsigned().notNullable();
         });
     }
 

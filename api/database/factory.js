@@ -9,7 +9,7 @@
  |
  */
 
-import user from './blueprints/user';
+const user = require('./blueprints/user');
 
 const Factory = use('Factory');
 
