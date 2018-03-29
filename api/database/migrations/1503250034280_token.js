@@ -6,7 +6,7 @@ const Schema = use('Schema');
  */
 class TokensSchema extends Schema {
     /**
-     * Creates the token schema in the database
+     * Creates the schema in the database
      *
      * @return {void}
      */
@@ -22,7 +22,7 @@ class TokensSchema extends Schema {
     }
 
     /**
-     * Drops the token schema in the database
+     * Drops the schema in the database
      *
      * @return {void}
      */
