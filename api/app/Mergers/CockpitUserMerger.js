@@ -16,6 +16,7 @@ class CockpitUserMerger {
      * Constructor of CockpitUserMerger
      *
      * @param {Object} remoteUser : Object : The user from the cockpit api
+     * @return {void}
      */
     constructor(remoteUser) {
         this.remoteUser = remoteUser;
