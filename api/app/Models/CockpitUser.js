@@ -7,11 +7,11 @@ class CockpitUser extends Model {
     /**
      * The cockpit working times of the user.
      *
-     * @method workingTimes
+     * @method weeklyWorkingTimes
      *
      * @return {Object} : Returns one or more working times
      */
-    workingTimes() {
+    weeklyWorkingTimes() {
         return this.hasMany('App/Models/CockpitUsersWeeklyWorkingTime');
     }
 
@@ -23,7 +23,7 @@ class CockpitUser extends Model {
      * @return {Object} : Returns one or more comparisons
      */
     projectsComparisons() {
-        return this.hasMany('App/Models/CockpitUsersProjectsComparisons');
+        return this.hasMany('App/Models/CockpitUsersProjectsComparison');
     }
 }
 

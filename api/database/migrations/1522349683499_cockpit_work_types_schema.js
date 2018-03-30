@@ -4,14 +4,14 @@ const Schema = use('Schema');
  * working time type (i.e scheduled, fulfilled)
  * @class CockpitWorkingTimeTypesSchema
  */
-class CockpitWorkingTimeTypesSchema extends Schema {
+class CockpitWorkTypesSchema extends Schema {
     /**
      * Creates the schema in the database
      *
      * @return {void}
      */
     up() {
-        this.create('cockpit_working_time_types', (table) => {
+        this.create('cockpit_work_types', (table) => {
             table.increments();
             table.timestamps();
             table.string('name').notNullable().unique();
@@ -25,8 +25,8 @@ class CockpitWorkingTimeTypesSchema extends Schema {
      * @return {void}
      */
     down() {
-        this.drop('cockpit_working_time_types');
+        this.drop('cockpit_work_types');
     }
 }
 
-module.exports = CockpitWorkingTimeTypesSchema;
+module.exports = CockpitWorkTypesSchema;

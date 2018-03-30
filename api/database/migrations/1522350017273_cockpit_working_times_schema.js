@@ -23,9 +23,9 @@ class CockpitWorkingTimesSchema extends Schema {
                 .references('id')
                 .inTable('cockpit_time_types');
 
-            table.integer('cockpit_working_time_type_id').unsigned().notNullable()
+            table.integer('cockpit_work_type_id').unsigned().notNullable()
                 .references('id')
-                .inTable('cockpit_working_time_types');
+                .inTable('cockpit_work_types');
 
             table.integer('cockpit_users_weekly_working_time_id').unsigned().notNullable();
 
