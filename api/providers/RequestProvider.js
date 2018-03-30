@@ -28,9 +28,13 @@ class RequestProvider extends ServiceProvider {
     }
 
     /**
-     * Fetched data from an api
+     * Fetches data from an api
      *
-     * @return {Promise} : A promise which is returning the data
+     * @param {String} apiUrl : String : The api url
+     * @param {String} method : String : The method
+     * @param {Object} body : Object : The request body
+     * @param {Object} headers : Object : The request headers
+     * @return {Promise} : The fetch promise
      */
     fetch(apiUrl, method = 'GET', body = {}, headers = {}) {
         if (!isString(apiUrl)) throw new Error('Parameter 1 must be a string');
