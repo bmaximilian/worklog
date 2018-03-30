@@ -13,5 +13,12 @@
 */
 
 const Route = use('Route');
+const apiPrefix = '/api/v1';
 
 Route.get('/', () => ({ greeting: 'Hello world in JSON' }));
+
+Route
+    .group(() => {
+        Route.get('/users', 'CockpitUserController.index');
+    })
+    .prefix(`${apiPrefix}/cockpit`);

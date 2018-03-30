@@ -1,4 +1,14 @@
 
+const path = require('path');
+
+/**
+ * Returns the path to the local provider specified by name
+ *
+ * @param {String} name : String : The name of the provider
+ * @returns {*|string} : The path of the provider
+ */
+const localProvider = name => path.join(__dirname, '..', `providers/${name}`);
+
 /*
  |--------------------------------------------------------------------------
  | Providers
@@ -15,6 +25,7 @@ const providers = [
     '@adonisjs/bodyparser/providers/BodyParserProvider',
     '@adonisjs/cors/providers/CorsProvider',
     '@adonisjs/lucid/providers/LucidProvider',
+    localProvider('RequestProvider'),
 ];
 
 /*
