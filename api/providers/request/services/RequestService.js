@@ -13,6 +13,7 @@ const {
     isString,
     keys,
 } = require('lodash');
+const { formatGetUrlParameters } = require('../../../util');
 
 /**
  * @class RequestService
@@ -81,6 +82,20 @@ class RequestService {
     }
 
     /**
+     * Creates a parsed response object
+     *
+     * @param {Object} response : Object : The fetch response
+     * @param {Object} body : Object : The parsed body
+     * @return {{status, body: *}} : The parsed response
+     */
+    mapToResponse(response, body) {
+        return {
+            status: response.status,
+            body,
+        };
+    }
+
+    /**
      * Fetches data from an api
      *
      * @param {String} apiUrl : String : The api url
@@ -92,6 +107,7 @@ class RequestService {
      */
     fetch(apiUrl, method = this.methods.GET, body = {}, headers = {}, responseType = this.responseTypes.JSON) {
         const parsedMethod = toUpper(method);
+        let parsedApiUrl = apiUrl;
 
         if (!isString(apiUrl)) throw new Error('Parameter 1 must be a string');
         if (!isString(method) || !includes(this.methodsArray, parsedMethod)) {
@@ -108,17 +124,19 @@ class RequestService {
 
         if (method !== this.methods.GET) {
             params = assign(params, { body: JSON.stringify(body) });
+        } else {
+            parsedApiUrl += formatGetUrlParameters(body);
         }
 
-        return fetch(apiUrl, params)
-            .then((response) => {
+        return fetch(parsedApiUrl, params)
+            .then(async (response) => {
                 switch (responseType) {
                     case this.responseTypes.JSON:
-                        return response.json();
+                        return this.mapToResponse(response, await response.json());
                     case this.responseTypes.TEXT:
-                        return response.text();
+                        return this.mapToResponse(response, await response.text());
                     case this.responseTypes.BUFFER:
-                        return response.buffer();
+                        return this.mapToResponse(response, await response.buffer());
                     default:
                         return response;
                 }
