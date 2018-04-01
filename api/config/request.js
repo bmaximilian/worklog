@@ -4,7 +4,18 @@
  * @author Maximilian Beck <maximilian.beck@wtl.de>
  */
 
+const Env = use('Env');
+
 module.exports = {
+    /*
+     |--------------------------------------------------------------------------
+     | Headers
+     |--------------------------------------------------------------------------
+     |
+     | Configure some default request headers
+     |
+     */
+    headers: {},
     /*
      |--------------------------------------------------------------------------
      | Cockpit
@@ -14,7 +25,7 @@ module.exports = {
      |
      */
     cockpit: {
-        baseRoute: '//cockpit.webteam-leipzig.net',
+        baseRoute: Env.get('COCKPIT_API_URL'),
         apiRoutes: {
             login: '/api/auth/login',
         },

@@ -7,7 +7,7 @@ const path = require('path');
  * @param {String} name : String : The name of the provider
  * @returns {*|string} : The path of the provider
  */
-const localProvider = name => path.join(__dirname, '..', `providers/${name}`);
+const localProvider = name => path.join(__dirname, '..', 'providers', `${name}`);
 
 /*
  |--------------------------------------------------------------------------
@@ -25,7 +25,8 @@ const providers = [
     '@adonisjs/bodyparser/providers/BodyParserProvider',
     '@adonisjs/cors/providers/CorsProvider',
     '@adonisjs/lucid/providers/LucidProvider',
-    localProvider('RequestProvider'),
+    localProvider('request/RequestProvider'),
+    localProvider('request/CockpitRequestProvider'),
 ];
 
 /*
