@@ -11,6 +11,7 @@ const {
     toUpper,
     isObject,
     isString,
+    keys,
 } = require('lodash');
 
 /**
@@ -25,6 +26,32 @@ class RequestService {
     constructor(config) {
         this.headers = config.headers;
         this.logger = use('Logger');
+        this.methodsArray = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+        this.responseTypes = {
+            JSON: 'JSON',
+            TEXT: 'TEXT',
+            BUFFER: 'BUFFER',
+            DEFAULT: 'DEFAULT',
+        };
+    }
+
+    /**
+     * Returns the allowed methods
+     *
+     * @return {{
+     * GET: String,
+     * POST: String,
+     * PUT: String,
+     * PATCH: String,
+     * DELETE: String,
+     * }} : The allowed methods
+     */
+    get methods() {
+        const buffer = {};
+        this.methodsArray.forEach((method) => {
+            buffer[method] = method;
+        });
+        return buffer;
     }
 
     /**
@@ -32,13 +59,24 @@ class RequestService {
      *
      * @param {String} key : String : Key of the header
      * @param {String} value : String : Value of the header
+     * @param {String} method : String : The method to set the header for
      * @returns {void}
      */
-    setDefaultHeader(key, value) {
+    setDefaultHeader(key, value, method = null) {
+        const parsedMethod = toUpper(method);
         if (!isString(key)) throw new Error('The key must be a string');
         if (!isString(value)) throw new Error('The value must be a string');
+        if (method && (!isString(method) || !includes(this.methodsArray, parsedMethod))) {
+            throw new Error(`The method must be a string and one of ${this.methodsArray.join(', ')}`);
+        }
 
-        this.headers[key] = value;
+        if (method) {
+            this.headers[parsedMethod][key] = value;
+        } else {
+            keys(this.headers).forEach((headerMethod) => {
+                this.headers[headerMethod][key] = value;
+            });
+        }
         this.logger.debug(`RequestProvider: Setting default header ${key} to ${value}`);
     }
 
@@ -49,29 +87,42 @@ class RequestService {
      * @param {String} method : String : The method
      * @param {Object} body : Object : The request body
      * @param {Object} headers : Object : The request headers
+     * @param {String} responseType : String : The response type
      * @return {Promise} : The fetch promise
      */
-    fetch(apiUrl, method = 'GET', body = {}, headers = {}) {
-        const allowedMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+    fetch(apiUrl, method = this.methods.GET, body = {}, headers = {}, responseType = this.responseTypes.JSON) {
         const parsedMethod = toUpper(method);
 
         if (!isString(apiUrl)) throw new Error('Parameter 1 must be a string');
-        if (!isString(method) || !includes(allowedMethods, parsedMethod)) {
-            throw new Error(`Parameter 2 must be a string and one of ${allowedMethods.join(', ')}`);
+        if (!isString(method) || !includes(this.methodsArray, parsedMethod)) {
+            throw new Error(`Parameter 2 must be a string and one of ${this.methodsArray.join(', ')}`);
         }
         if (!isObject(body)) throw new Error('Parameter 3 must be an object');
         if (!isObject(headers)) throw new Error('Parameter 4 must be an object');
 
         this.logger.info(`RequestProvider: ${parsedMethod} - ${apiUrl}`);
+        let params = {
+            method: parsedMethod,
+            headers: assign({}, this.headers[parsedMethod], headers),
+        };
 
-        return fetch(
-            apiUrl,
-            {
-                method: parsedMethod,
-                body,
-                headers: assign({}, this.headers, headers),
-            },
-        );
+        if (method !== this.methods.GET) {
+            params = assign(params, { body: JSON.stringify(body) });
+        }
+
+        return fetch(apiUrl, params)
+            .then((response) => {
+                switch (responseType) {
+                    case this.responseTypes.JSON:
+                        return response.json();
+                    case this.responseTypes.TEXT:
+                        return response.text();
+                    case this.responseTypes.BUFFER:
+                        return response.buffer();
+                    default:
+                        return response;
+                }
+            });
     }
 }
 

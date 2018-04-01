@@ -6,6 +6,7 @@
 
 const { ServiceProvider } = require('@adonisjs/fold');
 const RequestService = require('./services/RequestService');
+const { get } = require('lodash');
 
 /**
  * @class RequestProvider
@@ -18,8 +19,8 @@ class RequestProvider extends ServiceProvider {
      */
     register() {
         this.app.singleton('Request', () => {
-            const Config = this.app.use('Adonis/Src/Config');
-            return new (RequestService)(Config);
+            const Config = get(this.app.use('Adonis/Src/Config'), '_config.request', {});
+            return new RequestService(Config);
         });
     }
 }

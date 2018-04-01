@@ -15,7 +15,21 @@ module.exports = {
      | Configure some default request headers
      |
      */
-    headers: {},
+    headers: {
+        GET: {},
+        POST: {
+            'Content-Type': 'application/json',
+        },
+        PUT: {
+            'Content-Type': 'application/json',
+        },
+        PATCH: {
+            'Content-Type': 'application/json',
+        },
+        DELETE: {
+            'Content-Type': 'application/json',
+        },
+    },
     /*
      |--------------------------------------------------------------------------
      | Cockpit
@@ -27,7 +41,10 @@ module.exports = {
     cockpit: {
         baseRoute: Env.get('COCKPIT_API_URL'),
         apiRoutes: {
-            login: '/api/auth/login',
+            login: '/auth/login',
+            employees: '/employees',
+            employeeData: '/employees/{uuid}',
+            employeeEmployeeDataForYear: '/employees/{uuid}/{year}',
         },
     },
 };
