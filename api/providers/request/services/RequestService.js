@@ -11,9 +11,10 @@ const {
     toUpper,
     isObject,
     isString,
+    isEmpty,
     keys,
 } = require('lodash');
-const { formatGetUrlParameters } = require('../../../util');
+const { formatGetUrlParameters, objectLowDashToCamelCase } = require('../../../util');
 
 /**
  * @class RequestService
@@ -91,7 +92,7 @@ class RequestService {
     mapToResponse(response, body) {
         return {
             status: response.status,
-            body,
+            body: objectLowDashToCamelCase(body),
         };
     }
 
@@ -124,7 +125,7 @@ class RequestService {
 
         if (method !== this.methods.GET) {
             params = assign(params, { body: JSON.stringify(body) });
-        } else {
+        } else if (isObject(body) && !isEmpty(body)) {
             parsedApiUrl += formatGetUrlParameters(body);
         }
 
