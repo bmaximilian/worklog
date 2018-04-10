@@ -2,4 +2,4 @@
 
 cd "$(dirname "$0")"
 
-docker-compose -p worklog up --build
+docker-compose -p worklog down
