@@ -6,6 +6,7 @@
 
 exports.objectCamelCaseToLowDash = require('./object/objectCamelCaseToLowDash');
 exports.objectLowDashToCamelCase = require('./object/objectLowDashToCamelCase');
+exports.getParametersFromSource = require('./object/getParametersFromSource');
 exports.camelCaseToLowDash = require('./string/camelCaseToLowDash');
 exports.formatGetUrlParameters = require('./string/formatGetUrlParameters');
 exports.lowDashToCamelCase = require('./string/lowDashToCamelCase');
