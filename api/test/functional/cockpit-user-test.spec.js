@@ -9,7 +9,6 @@ if (Env.get('COCKPIT_USER') !== 'null') {
 
         assert.isNumber(login.body.expiresIn);
         assert.equal(login.body.status, 'ok');
-        assert.isString(login.body.token);
     }).timeout(0);
 
     test('Should fetch Employees data', async ({ assert }) => {

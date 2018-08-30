@@ -83,6 +83,16 @@ class RequestService {
     }
 
     /**
+     * Executed when the response is received
+     *
+     * @param {Object} response : Object : The response
+     * @return {void}
+     */
+    responseReceived(response) {
+        this.logger.debug(`Response received with status ${response.status}`);
+    }
+
+    /**
      * Creates a parsed response object
      *
      * @param {Object} response : Object : The fetch response
@@ -90,7 +100,15 @@ class RequestService {
      * @return {{status, body: *}} : The parsed response
      */
     mapToResponse(response, body) {
+        const headers = {};
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const key of response.headers.keys()) {
+            headers[key] = response.headers.get(key);
+        }
+
         return {
+            headers,
             status: response.status,
             body: objectLowDashToCamelCase(body),
         };
@@ -141,6 +159,10 @@ class RequestService {
                     default:
                         return response;
                 }
+            })
+            .then((response) => {
+                this.responseReceived(response);
+                return response;
             });
     }
 }

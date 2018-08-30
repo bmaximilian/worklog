@@ -44,12 +44,18 @@ class CockpitRequestService extends RequestService {
                 email,
                 password,
             },
-        )
-            .then((response) => {
-                this.token = `Bearer ${response.body.token}`;
-                this.setDefaultHeader('Authorization', this.token);
-                return response;
-            });
+        );
+    }
+
+    /**
+     * Executed when the response is received
+     *
+     * @param {Object} response : Object : The response
+     * @return {void}
+     */
+    responseReceived(response) {
+        this.token = get(response, 'headers.authorization');
+        this.setDefaultHeader('Authorization', this.token);
     }
 
     /**
