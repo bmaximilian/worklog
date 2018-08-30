@@ -11,6 +11,7 @@ const {
     toUpper,
     flatten,
 } = require('lodash');
+const { whitelist, camelCaseToLowDash } = require('bmax-utils');
 const { getParametersFromSource } = require('../../util');
 
 const CockpitUserModel = use('App/Models/CockpitUser');
@@ -37,12 +38,13 @@ class CockpitUserMerger {
      */
     async merge(remoteUser = this.remoteUser) {
         const user = await CockpitUserModel.findBy('uuid', get(remoteUser, 'uuid'));
+        const formattedRemoteUser = this.convertRemoteUserToDatabaseModel(remoteUser);
 
         if (!user) {
-            return CockpitUserModel.create(this.sanitize(remoteUser));
+            return CockpitUserModel.create(this.sanitizeUser(formattedRemoteUser));
         }
 
-        return user.fill(remoteUser);
+        return user.fill(formattedRemoteUser);
     }
 
     /**
@@ -51,8 +53,20 @@ class CockpitUserMerger {
      * @param {Object} remoteUser : Object : The user from the cockpit api
      * @returns {Object} : The sanitized remote user
      */
-    sanitize(remoteUser = this.remoteUser) {
-        return remoteUser;
+    sanitizeUser(remoteUser = this.remoteUser) {
+        return camelCaseToLowDash(whitelist(remoteUser, [
+            'firstName',
+            'lastName',
+            'uuid',
+            'mocoActive',
+            'workingHoursPerWeek',
+            'relationship',
+            'joined',
+            'totalVacationHours',
+            'takenVacationHours',
+            'sicknessHours',
+            'overtime',
+        ]));
     }
 
     /**

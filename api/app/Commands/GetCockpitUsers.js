@@ -52,7 +52,8 @@ class GetCockpitUsers extends Command {
             username = await this.askForLoginCredentials(options);
         }
 
-        this.fetchUser(options, username);
+        await this.fetchUser(options, username);
+        return Promise.resolve(true);
     }
 
     /**
@@ -73,16 +74,17 @@ class GetCockpitUsers extends Command {
                     === username);
         }
 
-        employees.forEach(async (employee) => {
+        return Promise.all(employees.map(async (employee) => {
             try {
                 const employeeData = await CockpitRequest.fetchEmployeeData(employee);
                 const cockpitUserMerger = new CockpitUserMerger(assign({}, employee, employeeData));
 
-                cockpitUserMerger.merge();
+                return await cockpitUserMerger.merge();
             } catch (e) {
                 Logger.error(e.message);
+                return Promise.reject(e);
             }
-        });
+        }));
     }
 
     /**
