@@ -4,7 +4,7 @@ upstream worklog-frontend {
 
 server {
     listen 0.0.0.0:80;
-    listen 0.0.0.0:443 ssl http2;
+    # listen 0.0.0.0:443 ssl http2;
     server_name worklog.test;
     server_tokens off;
     ## Strong SSL Security
