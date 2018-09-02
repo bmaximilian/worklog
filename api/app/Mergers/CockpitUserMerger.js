@@ -5,7 +5,6 @@
  */
 
 const {
-    get,
     keys,
     toLower,
     toUpper,
@@ -14,7 +13,7 @@ const {
 const { whitelist, camelCaseToLowDash } = require('bmax-utils');
 const { getParametersFromSource } = require('../../util');
 
-const CockpitUserModel = use('App/Models/CockpitUser');
+const CockpitUserPersister = use('App/Persister/CockpitUserPersister');
 
 /**
  * @class CockpitUserMerger
@@ -28,6 +27,7 @@ class CockpitUserMerger {
      */
     constructor(remoteUser) {
         this.remoteUser = remoteUser;
+        this.cockpitUserPersister = new CockpitUserPersister();
     }
 
     /**
@@ -37,14 +37,9 @@ class CockpitUserMerger {
      * @returns {Object} : The database user
      */
     async merge(remoteUser = this.remoteUser) {
-        const user = await CockpitUserModel.findBy('uuid', get(remoteUser, 'uuid'));
-        const formattedRemoteUser = this.convertRemoteUserToDatabaseModel(remoteUser);
+        const formattedRemoteUser = this.sanitizeUser(this.convertRemoteUserToDatabaseModel(remoteUser));
 
-        if (!user) {
-            return CockpitUserModel.create(this.sanitizeUser(formattedRemoteUser));
-        }
-
-        return user.fill(formattedRemoteUser);
+        return this.cockpitUserPersister.persistInDatabase(formattedRemoteUser);
     }
 
     /**
@@ -66,6 +61,8 @@ class CockpitUserMerger {
             'takenVacationHours',
             'sicknessHours',
             'overtime',
+            'weeklyWorkingTimes',
+            'projectsComparisons',
         ]));
     }
 
@@ -129,25 +126,35 @@ class CockpitUserMerger {
             return buffer;
         });
 
-        convertedUser.projectsComparisons = keys(remoteUser.comparison).map((key) => {
-            const match = /(\d{4})-(\d{2})/.exec(key);
-            const buffer = {};
+        // console.log(remoteUser.comparison);
+        convertedUser.projectsComparisons = keys(remoteUser.comparison)
+        .reduce((accumulator, comparisonType) => {
+            return [
+                ...accumulator,
+                ...keys(remoteUser.comparison[comparisonType])
+                .map((key) => {
+                    const match = /(\d{4})-(\d{2})/.exec(key);
+                    const buffer = {};
 
-            if (match && match.length > 2) {
-                buffer.year = parseInt(match[1], 10);
-                buffer.calendarWeek = parseInt(match[2], 10);
-            }
+                    if (match && match.length > 2) {
+                        buffer.year = parseInt(match[1], 10);
+                        buffer.calendarWeek = parseInt(match[2], 10);
+                    }
 
-            buffer.projects = keys(remoteUser.comparison[key]).map(projectShortName => ({
-                value: remoteUser.comparison[key][projectShortName],
-                project: {
-                    name: null,
-                    shortName: toUpper(projectShortName),
-                },
-            }));
+                    buffer.projects = keys(remoteUser.comparison[comparisonType][key]).map(projectShortName => ({
+                        value: remoteUser.comparison[comparisonType][key][projectShortName],
+                        comparisonType,
+                        project: {
+                            name: null,
+                            shortName: toUpper(projectShortName),
+                        },
+                    }));
 
-            return buffer;
-        });
+                    return buffer;
+                }),
+            ];
+        }, []);
+        console.log(convertedUser.projectsComparisons);
 
         return convertedUser;
     }

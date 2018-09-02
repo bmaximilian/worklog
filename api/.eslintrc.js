@@ -35,11 +35,13 @@ module.exports = {
             'error',
             'always',
         ],
-        'indent': ['error', 4, {
+        indent: ['error', 4, {
+            MemberExpression: 0,
             SwitchCase: 1,
         }],
         'no-multiple-empty-lines': ['error', { 'max': 1, 'maxBOF': 1 }],
         'valid-jsdoc': 'error',
+        'arrow-body-style': 'off',
         'max-len': ['error', { 'code': 120 }],
         'require-jsdoc': ['error', {
             require: {

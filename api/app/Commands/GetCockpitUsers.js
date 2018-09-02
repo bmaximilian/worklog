@@ -2,6 +2,7 @@ const { Command } = require('@adonisjs/ace');
 const { get, toLower, assign } = require('lodash');
 
 const Env = use('Env');
+const Database = use('Database');
 const Logger = use('Logger');
 const CockpitRequest = use('CockpitRequest');
 const CockpitUserMerger = use('App/Mergers/CockpitUserMerger');
@@ -53,6 +54,7 @@ class GetCockpitUsers extends Command {
         }
 
         await this.fetchUser(options, username);
+        Database.close();
         return Promise.resolve(true);
     }
 
@@ -61,7 +63,7 @@ class GetCockpitUsers extends Command {
      *
      * @param {Object} options : Object : the cli options
      * @param {string} username? : string : the username
-     * @return {Promise<void>} : The request
+     * @return {Promise<object[]>} : The request
      */
     async fetchUser(options, username) {
         let employees = await CockpitRequest.getEmployees();
@@ -69,22 +71,29 @@ class GetCockpitUsers extends Command {
 
         if (username && !options.all) {
             employees = employees
-                .filter(employee =>
-                    `${toLower(get(employee, 'firstname', ''))}.${toLower(get(employee, 'lastname', ''))}@wtl.de`
-                    === username);
+            .filter(employee =>
+                `${toLower(get(employee, 'firstname', ''))}.${toLower(get(employee, 'lastname', ''))}@wtl.de`
+                === username);
         }
 
-        return Promise.all(employees.map(async (employee) => {
+        const savedEmployees = [];
+        for (let i = 0; i < employees.length; i += 1) {
+            const employee = employees[i];
+
             try {
+                // eslint-disable-next-line no-await-in-loop
                 const employeeData = await CockpitRequest.fetchEmployeeData(employee);
                 const cockpitUserMerger = new CockpitUserMerger(assign({}, employee, employeeData));
 
-                return await cockpitUserMerger.merge();
+                // eslint-disable-next-line no-await-in-loop
+                const savedEmployee = await cockpitUserMerger.merge();
+                savedEmployees.push(savedEmployee);
             } catch (e) {
                 Logger.error(e.message);
-                return Promise.reject(e);
             }
-        }));
+        }
+
+        return savedEmployees;
     }
 
     /**
